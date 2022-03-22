@@ -1,0 +1,26 @@
+{
+  "name": "parser-avito",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node dist/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sawdes/parser-avito.git"
+  },
+  "author": "Sawdes",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sawdes/parser-avito/issues"
+  },
+  "homepage": "https://github.com/Sawdes/parser-avito#readme",
+  "dependencies": {
+    "node-html-parser": "^5.3.3",
+    "puppeteer": "^13.5.1",
+    "puppeteer-extra": "^3.2.3",
+    "puppeteer-extra-plugin-stealth": "^2.9.0"
+  }
+}
