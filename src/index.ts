@@ -14,6 +14,46 @@ const puppeteerPageLaunchOptions:object = {
     waitUntil: 'domcontentloaded',
     timeout: 99999999
 }
+const puppeteerLaunchOptions = [
+    '--autoplay-policy=user-gesture-required',
+    '--disable-background-networking',
+    '--disable-background-timer-throttling',
+    '--disable-backgrounding-occluded-windows',
+    '--disable-breakpad',
+    '--disable-client-side-phishing-detection',
+    '--disable-component-update',
+    '--disable-default-apps',
+    '--disable-dev-shm-usage',
+    '--disable-domain-reliability',
+    '--disable-extensions',
+    '--disable-features=AudioServiceOutOfProcess',
+    '--disable-hang-monitor',
+    '--disable-ipc-flooding-protection',
+    '--disable-notifications',
+    '--disable-offer-store-unmasked-wallet-cards',
+    '--disable-popup-blocking',
+    '--disable-print-preview',
+    '--disable-prompt-on-repost',
+    '--disable-renderer-backgrounding',
+    '--disable-setuid-sandbox',
+    '--disable-speech-api',
+    '--disable-sync',
+    '--hide-scrollbars',
+    '--ignore-gpu-blacklist',
+    '--metrics-recording-only',
+    '--mute-audio',
+    '--no-default-browser-check',
+    '--no-first-run',
+    '--no-pings',
+    '--no-sandbox',
+    '--no-zygote',
+    '--password-store=basic',
+    '--use-gl=swiftshader',
+    '--use-mock-keychain',
+    '--disable-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage'
+]
 const p = 4
 
 async function go(page:Page, url:string, options?:object):Promise<HTTPResponse> {
@@ -114,16 +154,30 @@ async function parser(browser: Browser) {
             console.log(`task ${task} started`)
             const page:Page = await browser.newPage()
             await go(page, task, puppeteerPageLaunchOptions)
-            fs.appendFileSync('./data/data.json', JSON.stringify(Product(await getHTML(page))))
-            console.log(`task ${task} finished`)
+            await new Promise<void>((resolve) => {
+                fs.readFile('./data/data.json', 'utf-8', async (err, data) => {
+                    if(err) {
+                        throw err
+                    }
+                    let json = await JSON.parse(data)
+                    json.push(Product(await getHTML(page)))
+                    fs.writeFile('./data/data.json', JSON.stringify(json), (err) => {
+                        resolve()
+                        if(err) {
+                            throw err
+                        }
+                    })
+                })
+            })
             await page.close()
+            console.log(`task ${task} finished`)
         }, 3)
         await generationTasks(browser, q)
     })
 }
 
 async function main(url:string, callback?: () => Promise<unknown>):Promise<void> {
-    const browser:Browser = await puppeteer.launch({headless: false});
+    const browser:Browser = await puppeteer.launch({headless: true, args: puppeteerLaunchOptions});
     try {
         await parser(browser)
     } catch(err) {
