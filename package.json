@@ -27,6 +27,7 @@
     "puppeteer-extra-plugin-stealth": "^2.9.0"
   },
   "devDependencies": {
+    "@types/async": "^3.2.12",
     "ts-node": "^10.7.0",
     "tsconfig-paths": "^3.14.1"
   }
